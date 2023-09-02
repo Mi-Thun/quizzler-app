@@ -3,20 +3,22 @@ package edu.ewubd.quizzler;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CategoryActivity extends AppCompatActivity {
 
@@ -26,7 +28,7 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category);
 
         GridView gridView = findViewById(R.id.gridView);
-        List<GridItem> items = generateItems(); // Implement this method to generate items
+        List<GridItem> items = generateItems();
 
         GridAdapter gridAdapter = new GridAdapter(this, items);
         gridView.setAdapter(gridAdapter);
@@ -69,33 +71,38 @@ public class CategoryActivity extends AppCompatActivity {
 
     private List<GridItem> generateItems() {
         List<GridItem> items = new ArrayList<>();
-        items.add(new GridItem(R.drawable.quize2, "Item 1"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize2, "Item 1"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize2, "Item 1"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize2, "Item 1"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize2, "Item 1"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize2, "Item 1"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
-        items.add(new GridItem(R.drawable.quize_1, "Item 2"));
-        items.add(new GridItem(R.drawable.quize_2, "Item 3"));
+        items.add(new GridItem(R.drawable.java, "Java"));
+        items.add(new GridItem(R.drawable.python, "Python"));
+        items.add(new GridItem(R.drawable.c, "C++"));
+        items.add(new GridItem(R.drawable.javascript, "JavaScript"));
+        items.add(new GridItem(R.drawable.ruby, "Ruby"));
+        items.add(new GridItem(R.drawable.swift, "Swift"));
         return items;
+    }
+
+    private void scheduleReminderNotification(Context context) {
+        Intent notificationIntent = new Intent(context, MyBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                uniqueRequestCode(),
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        long nextNotificationMillis = System.currentTimeMillis() + 6 * 60 * 60 * 1000;
+
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextNotificationMillis, pendingIntent);
+    }
+
+    private int uniqueRequestCode() {
+        return (int) System.currentTimeMillis();
+    }
+
+    @Override
+    protected void onDestroy() {
+        scheduleReminderNotification(getApplicationContext());
+        super.onDestroy();
     }
 }

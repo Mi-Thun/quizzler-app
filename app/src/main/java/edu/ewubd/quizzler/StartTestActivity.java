@@ -15,6 +15,7 @@ public class StartTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_test);
 
+
         start_testB = findViewById(R.id.start_testB);
 
         start_testB.setOnClickListener(new View.OnClickListener() {
@@ -24,6 +25,5 @@ public class StartTestActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
 }

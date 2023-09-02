@@ -53,8 +53,6 @@ public class QuestionsAdapter extends BaseAdapter {
         option3.setText(question.getOption3());
         option4.setText(question.getOption4());
 
-        // Set click listeners for options here if needed
-
         return convertView;
     }
 }

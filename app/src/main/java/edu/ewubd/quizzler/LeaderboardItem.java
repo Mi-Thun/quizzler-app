@@ -24,7 +24,5 @@ public class LeaderboardItem {
     public String getRank() {
         return rank;
     }
-
-
 }
 

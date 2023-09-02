@@ -34,20 +34,12 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/showimage"/>
 
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:outlineAmbientShadowColor="#000"
-                android:visibility="gone"
-                android:layout_height="match_parent"/>
-
             <EditText
-                android:id="@+id/NameId"
+                android:id="@+id/etName"
                 android:drawableStart="@drawable/ic_person_black_24dp"
                 android:hint="Name"
                 android:paddingLeft="10dp"
@@ -63,7 +55,7 @@
                 android:textColorHint="#E4503391"/>
 
             <EditText
-                android:id="@+id/EmailId"
+                android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:background="@drawable/imageshape"
                 android:layout_height="wrap_content"
@@ -79,7 +71,7 @@
                 android:padding="10dp" />
 
             <EditText
-                android:id="@+id/MobileId"
+                android:id="@+id/etMobile"
                 android:drawableStart="@drawable/ic_phone_black_24dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,7 +87,7 @@
                 android:padding="10dp" />
 
             <EditText
-                android:id="@+id/PasswordId"
+                android:id="@+id/etPassword"
                 android:drawableStart="@drawable/ic_lock_black_24dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,7 +103,7 @@
                 android:padding="10dp"/>
 
             <EditText
-                android:id="@+id/RePasswordId"
+                android:id="@+id/etRePassword"
                 android:drawableStart="@drawable/ic_lock_black_24dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,11 +127,11 @@
                     android:layout_height="wrap_content"
                     android:text="Remember Me"
                     android:textSize="16sp"
-                    android:id="@+id/rememberMe"/>
+                    android:id="@+id/cbRememberMe"/>
             </LinearLayout>
 
             <Button
-                android:id="@+id/SignUpButtonId"
+                android:id="@+id/btnSignUp"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:text="SIGN UP"
@@ -151,14 +143,14 @@
                 android:textAlignment="center" />
 
             <TextView
-                android:id="@+id/LogInTextId"
+                android:id="@+id/tvLogIn"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:textColor="#E4503391"
                 android:textSize="18dp"
                 android:text="Already have an account? LogIn"
-                android:onClick="LogInText"
+                android:clickable="true"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="15dp"
                 android:textAlignment="center" />

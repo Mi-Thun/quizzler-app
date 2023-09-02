@@ -1,8 +1,12 @@
 package edu.ewubd.quizzler;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,37 +14,60 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.NameValuePair;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.message.BasicNameValuePair;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
-    private ProgressBar progressBar;
-    private EditText email, pass;
-    private Button loginB;
-    private TextView forgetPassB, signupB;
-    private CheckBox rememberMe;
+    private String errMessage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        email = findViewById(R.id.emailId);
-        progressBar = findViewById(R.id.pbProgress);
-        pass = findViewById(R.id.passwordId);
-        loginB = findViewById(R.id.signInId);
-        signupB = findViewById(R.id.SignupTextId);
-        forgetPassB = findViewById(R.id.forgotPassword);
-        rememberMe = findViewById(R.id.rememberMe);
+        SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
 
-        loginB.setOnClickListener(new View.OnClickListener() {
+        try {
+            if (sharedPreferences.getBoolean("isRememberMe", false)) {
+                startActivity(new Intent(LoginActivity.this, CategoryActivity.class));
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        findViewById(R.id.signInId).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validateData()){
-                    login();
+                String email = ((EditText) findViewById(R.id.emailId)).getText().toString().trim();
+                String password = ((EditText) findViewById(R.id.passwordId)).getText().toString().trim();
+                boolean cbRememberMe = ((CheckBox) findViewById(R.id.rememberMe)).isChecked();
+
+                if(validateLoginCredentials(email, password)){
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("isRememberMe", cbRememberMe);
+                    editor.apply();
+
+                    Intent intent = new Intent(LoginActivity.this, CategoryActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else{
+                    showErrorDialog(errMessage);
                 }
             }
         });
 
-        signupB.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.SignupTextId).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
@@ -50,19 +77,109 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-    private boolean validateData(){
-        boolean status = false;
-        if(email.getText().toString().isEmpty()){
-            email.setError("Enter Email ID");
-            return false;
+    private boolean validateLoginCredentials(String email, String password) {
+        errMessage = "";
+        if (email.isEmpty() || password.isEmpty()) {
+            errMessage += "All fields are required.\n---------------------\n";
         }
-        if(pass.getText().toString().isEmpty()){
-            pass.setError("Enter password");
-            return false;
-        }
-        return true;
-    }
-    private void login(){
 
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        if (!email.matches(emailPattern)) {
+            errMessage += "Invalid email format.\n";
+        }
+
+        if (password.length() < 4 || password.length() > 6) {
+            errMessage += "Password should be 4-6 characters long.\n";
+        }
+
+        if (errMessage.isEmpty()) {
+            SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
+            if(sharedPreferences.getString("email", "") == ""){
+                String keys[] = {"action","email", "password"};
+                String values[] = {"login", email, password};
+                httpRequest(keys, values);
+            }
+            if (email.equals(sharedPreferences.getString("email", "")) && password.equals(sharedPreferences.getString("password", ""))) {
+                return true;
+            } else {
+                errMessage += "Invalid password.\n";
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private void showErrorDialog(String errMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(errMessage);
+        builder.setTitle("Error");
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void httpRequest ( final String keys[], final String values[]){
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                for (int i = 0; i < keys.length; i++) {
+                    params.add(new BasicNameValuePair(keys[i], values[i]));
+                }
+                String url = "";
+                String data = "";
+                try {
+                    data = JSONParser.getInstance().makeHttpRequest(url, "POST", params);
+                    System.out.println(data);
+                    return data;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            protected void onPostExecute(String data) {
+                if (data != null) {
+                    System.out.println(data);
+                    System.out.println("Ok2");
+                    getUserDataByServerData(data);
+                    Toast.makeText(getApplicationContext(), data, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
+    private void getUserDataByServerData(String data) {
+        System.out.println("found");
+        try {
+            JSONObject jo = new JSONObject(data);
+            if (jo.has("userdata")) {
+                JSONArray ja = jo.getJSONArray("userdata");
+
+                JSONObject user = ja.getJSONObject(0);
+                String name = user.getString("name");
+                String email = user.getString("email");
+                String mobile = user.getString("mobile");
+                String password = user.getString("password");
+
+                SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putString("name", name);
+                editor.putString("email", email);
+                editor.putString("mobile", mobile);
+                editor.putString("password", password);
+                editor.apply();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }

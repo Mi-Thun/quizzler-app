@@ -36,7 +36,10 @@ public class CategoryActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                String categoryName = items.get(position).getCategoryName();
+
                 Intent i = new Intent(CategoryActivity.this, StartTestActivity.class);
+                i.putExtra("categoryName", categoryName);
                 startActivity(i);
             }
         });

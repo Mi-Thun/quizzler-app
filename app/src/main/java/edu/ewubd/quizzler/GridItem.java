@@ -16,5 +16,9 @@ public class GridItem {
     public String getTitle() {
         return title;
     }
+
+    public String getCategoryName() {
+        return title;
+    }
 }
 

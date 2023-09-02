@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,14 +23,16 @@ public class AccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
-//        TextView profileTextView = findViewById(R.id.profile);
-//        profileTextView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(AccountActivity.this, EditProfileActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
+
+        TextView tvName = (TextView) findViewById(R.id.tvName);
+        tvName.setText(sharedPreferences.getString("name", ""));
+
+        TextView tvREmail = (TextView) findViewById(R.id.tvREmail);
+        tvREmail.setText(sharedPreferences.getString("email", ""));
+
+        TextView tvMobile = (TextView) findViewById(R.id.tvMobile);
+        tvMobile.setText(sharedPreferences.getString("mobile", ""));
 
         LinearLayout profileTextView = findViewById(R.id.profile);
         profileTextView.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +80,19 @@ public class AccountActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        findViewById(R.id.logoutB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isRememberMe", false);
+                editor.apply();
+                Intent i = new Intent(AccountActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }

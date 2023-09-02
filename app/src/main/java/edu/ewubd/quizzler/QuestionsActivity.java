@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -33,31 +34,40 @@ public class QuestionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questions);
 
+        String categoryName = getIntent().getStringExtra("categoryName");
+
         tvTimer = findViewById(R.id.tvTimer);
 
         listQuestion = findViewById(R.id.questionView);
         questions = new ArrayList<>();
-
-        questionAdapter = new QuestionsAdapter(this, questions);
-        listQuestion.setAdapter(questionAdapter);
-
-        startTimer();
 
 //        for (int i=0; i<10; i++) {
 //            QuestionItem e = new QuestionItem("What is C++", "Programming Language", "Food Name", "", "DDDDDDDDDDDDDDDDDDDD");
 //            questions.add(e);
 //        }
 
-        questions.add(new QuestionItem("What is Python?", "Programming Language", "Reptile", "Fruit", "Animal"));
-        questions.add(new QuestionItem("Which of the following is NOT a Python data type?", "Class", "Integer", "List", "String"));
-        questions.add(new QuestionItem("What is the file extension for Python source code files?", ".py", ".pt", ".pg", ".pn"));
-        questions.add(new QuestionItem("Which keyword is used to define a function in Python?", "def", "function", "define", "func"));
-        questions.add(new QuestionItem("Which Python library is commonly used for data manipulation and analysis?", "Pandas", "Matplotlib", "Numpy", "Scikit-learn"));
-        questions.add(new QuestionItem("Which Python data type is used to store an ordered collection of items?", "List", "Tuple", "Set", "Dictionary"));
-        questions.add(new QuestionItem("What does the 'len()' function do in Python?", "Return the length of a sequence", "Convert a value to lowercase", "Generate a random number", "Check if a value is even"));
-        questions.add(new QuestionItem("In Python, how do you open and read from a file?", "open('file.txt', 'r')", "read_file('file.txt')", "file.open('file.txt')", "load('file.txt')"));
-        questions.add(new QuestionItem("Which loop is used for iterating over a sequence (such as a list or tuple) in Python?", "for loop", "while loop", "repeat loop", "do-while loop"));
-        questions.add(new QuestionItem("What is the result of the expression '3 + 5 * 2' in Python?", "13", "16", "11", "10"));
+        questions.add(new QuestionItem("Python", "What is Python?", "Programming Language", "Reptile", "Fruit", "Animal"));
+        questions.add(new QuestionItem("java", "Which of the following is NOT a Python data type?", "Class", "Integer", "List", "String"));
+        questions.add(new QuestionItem("Python", "What is the file extension for Python source code files?", ".py", ".pt", ".pg", ".pn"));
+        questions.add(new QuestionItem("Python", "Which keyword is used to define a function in Python?", "def", "function", "define", "func"));
+        questions.add(new QuestionItem("ruby", "Which Python library is commonly used for data manipulation and analysis?", "Pandas", "Matplotlib", "Numpy", "Scikit-learn"));
+        questions.add(new QuestionItem("Python", "Which Python data type is used to store an ordered collection of items?", "List", "Tuple", "Set", "Dictionary"));
+        questions.add(new QuestionItem("Python", "What does the 'len()' function do in Python?", "Return the length of a sequence", "Convert a value to lowercase", "Generate a random number", "Check if a value is even"));
+        questions.add(new QuestionItem("Python", "In Python, how do you open and read from a file?", "open('file.txt', 'r')", "read_file('file.txt')", "file.open('file.txt')", "load('file.txt')"));
+        questions.add(new QuestionItem("Python", "Which loop is used for iterating over a sequence (such as a list or tuple) in Python?", "for loop", "while loop", "repeat loop", "do-while loop"));
+        questions.add(new QuestionItem("c++", "What is the result of the expression '3 + 5 * 2' in Python?", "13", "16", "11", "10"));
+
+        List<QuestionItem> filteredQuestions = new ArrayList<>();
+        for (QuestionItem question : questions) {
+            if (question.getCategory().equalsIgnoreCase(categoryName)) {
+                filteredQuestions.add(question);
+            }
+        }
+
+        questionAdapter = new QuestionsAdapter(this, filteredQuestions);
+        listQuestion.setAdapter(questionAdapter);
+
+        startTimer();
 
         findViewById(R.id.submitB).setOnClickListener(new View.OnClickListener() {
             @Override

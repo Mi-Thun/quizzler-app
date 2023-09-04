@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -99,12 +100,13 @@ public class QuestionsActivity extends AppCompatActivity {
             cursor.close();
         }
 
+        Collections.shuffle(questions);
 
         List<QuestionItem> filteredQuestions = new ArrayList<>();
         for (QuestionItem question : questions) {
-            if (question.getCategory().equalsIgnoreCase(categoryName)) {
+            if (question.getCategory().equalsIgnoreCase(categoryName) && filteredQuestions.size() < 25) {
                 filteredQuestions.add(question);
-            }
+                Collections.shuffle(filteredQuestions);            }
         }
 
         questionAdapter = new QuestionsAdapter(this, filteredQuestions);

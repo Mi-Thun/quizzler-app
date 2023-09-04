@@ -1,5 +1,6 @@
 package edu.ewubd.quizzler;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,11 +29,30 @@ import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
     private String errMessage = "";
+    private EditText etName, etEmail, etMobile, etPassword, etRePassword;
+    private CheckBox cbRememberMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        etName = findViewById(R.id.etName);
+        etEmail = findViewById(R.id.etEmail);
+        etMobile = findViewById(R.id.etMobile);
+        etPassword = findViewById(R.id.etPassword);
+        etRePassword = findViewById(R.id.etRePassword);
+        cbRememberMe = findViewById(R.id.cbRememberMe);
+
+        if (savedInstanceState != null) {
+            etName.setText(savedInstanceState.getString("name", ""));
+            etEmail.setText(savedInstanceState.getString("email", ""));
+            etMobile.setText(savedInstanceState.getString("mobile", ""));
+            etPassword.setText(savedInstanceState.getString("password", ""));
+            etRePassword.setText(savedInstanceState.getString("re_password", ""));
+            cbRememberMe.setChecked(savedInstanceState.getBoolean("isRememberMe", false));
+        }
+
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
 
@@ -123,6 +143,17 @@ public class SignupActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("name", etName.getText().toString().trim());
+        outState.putString("email", etEmail.getText().toString().trim());
+        outState.putString("mobile", etMobile.getText().toString().trim());
+        outState.putString("password", etPassword.getText().toString().trim());
+        outState.putString("re_password", etRePassword.getText().toString().trim());
+        outState.putBoolean("isRememberMe", cbRememberMe.isChecked());
     }
 
     private void showErrorDialog(String errMessage) {

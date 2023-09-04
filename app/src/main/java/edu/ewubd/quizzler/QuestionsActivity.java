@@ -1,8 +1,11 @@
 package edu.ewubd.quizzler;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -17,22 +20,49 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class QuestionsActivity extends AppCompatActivity {
-
+    private InterstitialAd mInterstitialAd;
     private ListView listQuestion;
     private ArrayList<QuestionItem> questions;
     private QuestionsAdapter questionAdapter;
     private TextView tvTimer;
     private Handler handler;
-
     private static final int TIMER_INTERVAL = 1000;
     private static final int TOTAL_TIME_IN_MILLIS = 1500000;
+    private long elapsedTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questions);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
+
+            }
+        });
+
+        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                mInterstitialAd = interstitialAd;
+            }
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                mInterstitialAd = null;
+            }
+        });
 
         String categoryName = getIntent().getStringExtra("categoryName");
 
@@ -41,21 +71,34 @@ public class QuestionsActivity extends AppCompatActivity {
         listQuestion = findViewById(R.id.questionView);
         questions = new ArrayList<>();
 
-//        for (int i=0; i<10; i++) {
-//            QuestionItem e = new QuestionItem("What is C++", "Programming Language", "Food Name", "", "DDDDDDDDDDDDDDDDDDDD");
-//            questions.add(e);
-//        }
+        questions.add(new QuestionItem("Python", "What is Python?", "Programming Language", "Reptile", "Fruit", "Animal", "A"));
+        questions.add(new QuestionItem("java", "Which of the following is NOT a Python data type?", "Class", "Integer", "List", "String", "B"));
+        questions.add(new QuestionItem("Python", "What is the file extension for Python source code files?", ".py", ".pt", ".pg", ".pn", "C"));
+        questions.add(new QuestionItem("Python", "Which keyword is used to define a function in Python?", "def", "function", "define", "func", "D"));
+        questions.add(new QuestionItem("ruby", "Which Python library is commonly used for data manipulation and analysis?", "Pandas", "Matplotlib", "Numpy", "Scikit-learn", "A"));
+        questions.add(new QuestionItem("Python", "Which Python data type is used to store an ordered collection of items?", "List", "Tuple", "Set", "Dictionary", "B"));
+        questions.add(new QuestionItem("Python", "What does the 'len()' function do in Python?", "Return the length of a sequence", "Convert a value to lowercase", "Generate a random number", "Check if a value is even","C"));
+        questions.add(new QuestionItem("Python", "In Python, how do you open and read from a file?", "open('file.txt', 'r')", "read_file('file.txt')", "file.open('file.txt')", "load('file.txt')", "D"));
+        questions.add(new QuestionItem("Python", "Which loop is used for iterating over a sequence (such as a list or tuple) in Python?", "for loop", "while loop", "repeat loop", "do-while loop", "A"));
+        questions.add(new QuestionItem("c++", "What is the result of the expression '3 + 5 * 2' in Python?", "13", "16", "11", "10", "B"));
 
-        questions.add(new QuestionItem("Python", "What is Python?", "Programming Language", "Reptile", "Fruit", "Animal"));
-        questions.add(new QuestionItem("java", "Which of the following is NOT a Python data type?", "Class", "Integer", "List", "String"));
-        questions.add(new QuestionItem("Python", "What is the file extension for Python source code files?", ".py", ".pt", ".pg", ".pn"));
-        questions.add(new QuestionItem("Python", "Which keyword is used to define a function in Python?", "def", "function", "define", "func"));
-        questions.add(new QuestionItem("ruby", "Which Python library is commonly used for data manipulation and analysis?", "Pandas", "Matplotlib", "Numpy", "Scikit-learn"));
-        questions.add(new QuestionItem("Python", "Which Python data type is used to store an ordered collection of items?", "List", "Tuple", "Set", "Dictionary"));
-        questions.add(new QuestionItem("Python", "What does the 'len()' function do in Python?", "Return the length of a sequence", "Convert a value to lowercase", "Generate a random number", "Check if a value is even"));
-        questions.add(new QuestionItem("Python", "In Python, how do you open and read from a file?", "open('file.txt', 'r')", "read_file('file.txt')", "file.open('file.txt')", "load('file.txt')"));
-        questions.add(new QuestionItem("Python", "Which loop is used for iterating over a sequence (such as a list or tuple) in Python?", "for loop", "while loop", "repeat loop", "do-while loop"));
-        questions.add(new QuestionItem("c++", "What is the result of the expression '3 + 5 * 2' in Python?", "13", "16", "11", "10"));
+        QuestionDB questionDB = new QuestionDB(this);
+        Cursor cursor = questionDB.selectQuestionsByCategory(categoryName);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String question = cursor.getString(cursor.getColumnIndex("Question"));
+                @SuppressLint("Range") String optionA = cursor.getString(cursor.getColumnIndex("OptionA"));
+                @SuppressLint("Range") String optionB = cursor.getString(cursor.getColumnIndex("OptionB"));
+                @SuppressLint("Range") String optionC = cursor.getString(cursor.getColumnIndex("OptionC"));
+                @SuppressLint("Range") String optionD = cursor.getString(cursor.getColumnIndex("OptionD"));
+                @SuppressLint("Range") String answer = cursor.getString(cursor.getColumnIndex("Answer"));
+
+                questions.add(new QuestionItem(categoryName, question, optionA, optionB, optionC, optionD, answer));
+
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
 
         List<QuestionItem> filteredQuestions = new ArrayList<>();
         for (QuestionItem question : questions) {
@@ -73,8 +116,16 @@ public class QuestionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(QuestionsActivity.this, ResultActivity.class);
+                i.putExtra("SCORE", questionAdapter.calculateScore());
+                i.putExtra("correct", questionAdapter.getCorrect());
+                i.putExtra("wrong", questionAdapter.getWromg());
+                i.putExtra("not_answer", questionAdapter.getNotAnswe());
+                i.putExtra("time", elapsedTime);
                 startActivity(i);
                 finish();
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(QuestionsActivity.this);
+                }
             }
         });
     }
@@ -90,8 +141,13 @@ public class QuestionsActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Intent intent = new Intent(QuestionsActivity.this, ResultActivity.class);
-                            startActivity(intent);
+                            Intent i = new Intent(QuestionsActivity.this, ResultActivity.class);
+                            i.putExtra("SCORE", questionAdapter.calculateScore());
+                            i.putExtra("correct", questionAdapter.getCorrect());
+                            i.putExtra("wrong", questionAdapter.getWromg());
+                            i.putExtra("not_answer", questionAdapter.getNotAnswe());
+                            i.putExtra("time", elapsedTime = TOTAL_TIME_IN_MILLIS);
+                            startActivity(i);
                             finish();
                         }
                     });
@@ -108,6 +164,7 @@ public class QuestionsActivity extends AppCompatActivity {
                     });
 
                     remainingTime -= TIMER_INTERVAL;
+                    elapsedTime = TOTAL_TIME_IN_MILLIS - remainingTime;
                     handler.postDelayed(this, TIMER_INTERVAL);
                 }
             }

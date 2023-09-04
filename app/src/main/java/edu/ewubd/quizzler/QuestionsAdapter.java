@@ -11,17 +11,28 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionsAdapter extends BaseAdapter {
     private Context context;
     private List<QuestionItem> questions;
     private SparseArray<Integer> selectedOptions;
+    private List<String> correctAnswers;
+
+    private int tvCorrect = 0, tvNotAnswer = 0, tvWrong = 0;
 
     public QuestionsAdapter(Context context, List<QuestionItem> questions) {
         this.context = context;
         this.questions = questions;
         this.selectedOptions = new SparseArray<>();
+
+        this.correctAnswers = new ArrayList<>();
+        for (QuestionItem question : questions) {
+            correctAnswers.add(question.getAnswer());
+        }
+        System.out.println("--------------------------------------");
+        System.out.println(correctAnswers);
     }
 
     @Override
@@ -110,5 +121,53 @@ public class QuestionsAdapter extends BaseAdapter {
         } else {
             return -1;
         }
+    }
+
+    public int calculateScore() {
+        int score = 0;
+        for (int i = 0; i < questions.size(); i++) {
+            QuestionItem question = questions.get(i);
+            int selectedOptionIndex = selectedOptions.get(i, -1);
+
+            if (selectedOptionIndex != -1){
+                if (selectedOptionIndex == getOptionIndex(question.getAnswer())){
+                    score++;
+                    tvCorrect++;
+                } else {
+                    tvWrong++;
+                }
+
+            } else {
+                tvNotAnswer++;
+            }
+        }
+        return score;
+    }
+
+    private int getOptionIndex(String answer) {
+        switch (answer.toUpperCase()) {
+            case "A":
+                return 0;
+            case "B":
+                return 1;
+            case "C":
+                return 2;
+            case "D":
+                return 3;
+            default:
+                return -1;
+        }
+    }
+
+    public int getCorrect() {
+        return tvCorrect;
+    }
+
+    public int getNotAnswe() {
+        return tvNotAnswer;
+    }
+
+    public int getWromg() {
+        return tvWrong;
     }
 }

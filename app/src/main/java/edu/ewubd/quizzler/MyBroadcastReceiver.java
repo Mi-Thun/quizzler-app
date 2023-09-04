@@ -1,6 +1,7 @@
 package edu.ewubd.quizzler;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,13 +14,30 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.util.List;
+
 public class MyBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        showNotification(context, "Quiz Reminder", "Quizzler miss you..!!");
-
-        scheduleNextNotification(context);
+        if (!isAppInForeground(context)) {
+            showNotification(context, "Quiz Reminder", "Quizzler miss you..!!");
+            scheduleNextNotification(context);
+        }
     }
+
+    private boolean isAppInForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningProcesses = activityManager.getRunningAppProcesses();
+        if (runningProcesses != null) {
+            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+                if (processInfo.processName.equals(context.getPackageName()) && processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     private void scheduleNextNotification(Context context) {
         Intent notificationIntent = new Intent(context, MyBroadcastReceiver.class);
@@ -31,15 +49,22 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         );
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
         long currentTimeMillis = System.currentTimeMillis();
-        long nextNotificationMillis = currentTimeMillis + 6 * 60 * 60 * 1000;
-
+        long nextNotificationMillis = currentTimeMillis + 2 * 60 * 1000;
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextNotificationMillis, pendingIntent);
     }
 
     @SuppressLint("MissingPermission")
     private void showNotification(Context context, String title, String message) {
+        Intent appIntent = new Intent(context, CategoryActivity.class);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent appPendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                appIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     "default_channel_id",
@@ -55,7 +80,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(appPendingIntent)
+                .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(1, builder.build());

@@ -49,11 +49,13 @@ public class LeaderboardActivity extends AppCompatActivity {
                     Intent intent = new Intent(LeaderboardActivity.this, CategoryActivity.class);
                     intent.putExtra("highlightItem", R.id.action_item1);
                     startActivity(intent);
+                    finish();
                     return true;
                 } else if (itemId == R.id.action_item3) {
                     Intent intent = new Intent(LeaderboardActivity.this, AccountActivity.class);
                     intent.putExtra("highlightItem", R.id.action_item3);
                     startActivity(intent);
+                    finish();
                     return true;
                 }
                 return false;

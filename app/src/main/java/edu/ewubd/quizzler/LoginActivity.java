@@ -53,7 +53,11 @@ public class LoginActivity extends AppCompatActivity {
                 String password = ((EditText) findViewById(R.id.passwordId)).getText().toString().trim();
                 boolean cbRememberMe = ((CheckBox) findViewById(R.id.rememberMe)).isChecked();
 
-                if(validateLoginCredentials(email, password)){
+                if ("admin@gmail.com".equals(email) && "admin123".equals(password)) {
+                    Intent intent = new Intent(LoginActivity.this, AddQuestionActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else if (validateLoginCredentials(email, password)) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("isRememberMe", cbRememberMe);
                     editor.apply();
@@ -61,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                     Intent intent = new Intent(LoginActivity.this, CategoryActivity.class);
                     startActivity(intent);
                     finish();
-                } else{
+                } else {
                     showErrorDialog(errMessage);
                 }
             }

@@ -67,6 +67,7 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/tvScore"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -139,6 +140,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/timeneed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -149,6 +151,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/totalquestion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -210,6 +213,7 @@
                     tools:ignore="RtlCompat" />
 
                 <TextView
+                    android:id="@+id/tvCorrect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -257,6 +261,7 @@
                     tools:ignore="RtlCompat" />
 
                 <TextView
+                    android:id="@+id/tvWrong"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -303,6 +308,7 @@
                     tools:ignore="RtlCompat" />
 
                 <TextView
+                    android:id="@+id/tvNotAnswer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

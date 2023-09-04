@@ -5,7 +5,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -18,8 +20,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quizzler"
         tools:targetApi="31">
+        <activity
+            android:name=".AddQuestionActivity"
+            android:exported="false" />
 
-        <receiver android:name=".MyBroadcastReceiver"/>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
+        <receiver android:name=".MyBroadcastReceiver" />
 
         <activity
             android:name=".EditProfileActivity"
@@ -57,7 +66,6 @@
         <activity
             android:name=".CategoryActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

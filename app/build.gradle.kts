@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.android.gms:play-services-ads:22.3.0") //this line is needed to add into build.gradle:app
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

@@ -19,9 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CategoryActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +58,13 @@ public class CategoryActivity extends AppCompatActivity {
                     Intent intent = new Intent(CategoryActivity.this, LeaderboardActivity.class);
                     intent.putExtra("highlightItem", R.id.action_item2);
                     startActivity(intent);
+                    finish();
                     return true;
                 } else if (itemId == R.id.action_item3) {
                     Intent intent = new Intent(CategoryActivity.this, AccountActivity.class);
                     intent.putExtra("highlightItem", R.id.action_item3);
                     startActivity(intent);
+                    finish();
                     return true;
                 }
                 return false;
@@ -93,14 +93,21 @@ public class CategoryActivity extends AppCompatActivity {
         );
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        long nextNotificationMillis = System.currentTimeMillis() + 6 * 60 * 60 * 1000;
-
+        long nextNotificationMillis = System.currentTimeMillis() + 3 * 60 * 1000; //System.currentTimeMillis() + 6 * 60 * 60 * 1000
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextNotificationMillis, pendingIntent);
     }
 
     private int uniqueRequestCode() {
         return (int) System.currentTimeMillis();
+    }
+
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

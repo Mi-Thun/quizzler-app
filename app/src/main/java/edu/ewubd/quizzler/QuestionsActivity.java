@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,8 +110,15 @@ public class QuestionsActivity extends AppCompatActivity {
                 Collections.shuffle(filteredQuestions);            }
         }
 
-        questionAdapter = new QuestionsAdapter(this, filteredQuestions);
-        listQuestion.setAdapter(questionAdapter);
+        if (filteredQuestions.size() == 0) {
+            Toast.makeText(this, "No questions found for this category.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, CategoryActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            questionAdapter = new QuestionsAdapter(this, filteredQuestions);
+            listQuestion.setAdapter(questionAdapter);
+        }
 
         startTimer();
 

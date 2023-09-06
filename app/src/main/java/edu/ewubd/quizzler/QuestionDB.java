@@ -15,7 +15,7 @@ public class QuestionDB extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		String sql = "CREATE TABLE questions  ("
-				+ "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "ID TEXT PRIMARY KEY,"
 				+ "Question TEXT,"
 				+ "OptionA TEXT,"
 				+ "OptionB TEXT,"
@@ -32,9 +32,10 @@ public class QuestionDB extends SQLiteOpenHelper {
 		// Implement this method if you need to modify the database schema in the future.
 	}
 
-	public long insertQuestion(String question, String optionA, String optionB, String optionC, String optionD, String answer, String category) {
+	public long insertQuestion(String ID, String question, String optionA, String optionB, String optionC, String optionD, String answer, String category) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
+		values.put("ID", ID);
 		values.put("Question", question);
 		values.put("OptionA", optionA);
 		values.put("OptionB", optionB);
@@ -48,9 +49,10 @@ public class QuestionDB extends SQLiteOpenHelper {
 		return newRowId;
 	}
 
-	public int updateQuestion(int id, String question, String optionA, String optionB, String optionC, String optionD, String answer, String category) {
+	public int updateQuestion(String ID, String question, String optionA, String optionB, String optionC, String optionD, String answer, String category) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
+		values.put("ID", ID);
 		values.put("Question", question);
 		values.put("OptionA", optionA);
 		values.put("OptionB", optionB);
@@ -59,9 +61,15 @@ public class QuestionDB extends SQLiteOpenHelper {
 		values.put("Answer", answer);
 		values.put("Category", category);
 
-		int rowsAffected = db.update("questions", values, "ID=?", new String[]{String.valueOf(id)});
+		int rowsAffected = db.update("questions", values, "ID=?", new String[]{ID});
 		db.close();
 		return rowsAffected;
+	}
+
+	public void deleteQuestion(String ID) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete("questions", "ID=?", new String[ ] {ID} );
+		db.close();
 	}
 
 	public Cursor selectQuestionsByCategory(String category) {
@@ -71,6 +79,17 @@ public class QuestionDB extends SQLiteOpenHelper {
 			String query = "SELECT * FROM questions WHERE Category = ?";
 			res = db.rawQuery(query, new String[]{category});
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public Cursor selectQuestions(String query) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor res=null;
+		try {
+			res = db.rawQuery(query, null);
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 		return res;

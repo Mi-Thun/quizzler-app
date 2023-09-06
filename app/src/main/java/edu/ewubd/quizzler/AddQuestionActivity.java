@@ -11,6 +11,7 @@ import android.widget.Toast;
 public class AddQuestionActivity extends AppCompatActivity {
     EditText questionEditText, optionAEditText, optionBEditText, optionCEditText, optionDEditText, answerEditText, categoryEditText;
     Button saveButton, cancelButton;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,8 @@ public class AddQuestionActivity extends AppCompatActivity {
         String category = categoryEditText.getText().toString();
 
         QuestionDB questionDB = new QuestionDB(this);
-        questionDB.insertQuestion(question, optionA, optionB, optionC, optionD, answer, category);
+        id = String.valueOf(System.currentTimeMillis());
+        questionDB.insertQuestion(id, question, optionA, optionB, optionC, optionD, answer, category);
 
         Toast.makeText(this, "Question saved successfully", Toast.LENGTH_SHORT).show();
         clearFields();

@@ -52,6 +52,15 @@ public class StartTestActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StartTestActivity.this, CategoryActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

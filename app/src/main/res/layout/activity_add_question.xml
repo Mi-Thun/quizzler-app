@@ -131,6 +131,15 @@
             android:textColor="#FFFFFF"/>
 
         <Button
+            android:id="@+id/btnViewQuestion"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="All Question"
+            android:backgroundTint="#673AB7"
+            android:textColor="#FFFFFF"/>
+
+        <Button
             android:id="@+id/btnSave"
             android:layout_width="0dp"
             android:layout_weight="1"

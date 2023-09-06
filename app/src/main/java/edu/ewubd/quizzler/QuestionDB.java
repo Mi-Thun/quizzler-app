@@ -68,6 +68,8 @@ public class QuestionDB extends SQLiteOpenHelper {
 
 	public void deleteQuestion(String ID) {
 		SQLiteDatabase db = this.getWritableDatabase();
+		System.out.println("-----delete------------");
+		System.out.println(ID);
 		db.delete("questions", "ID=?", new String[ ] {ID} );
 		db.close();
 	}

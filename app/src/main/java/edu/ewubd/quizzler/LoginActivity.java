@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                 String password = ((EditText) findViewById(R.id.passwordId)).getText().toString().trim();
                 boolean cbRememberMe = ((CheckBox) findViewById(R.id.rememberMe)).isChecked();
 
-                if ("admin@gmail.com".equals(email) && "admin123".equals(password)) {
+                if ("admin@gmail.com".equals(email) && "1111".equals(password)) {
                     Intent intent = new Intent(LoginActivity.this, AddQuestionActivity.class);
                     startActivity(intent);
                     finish();

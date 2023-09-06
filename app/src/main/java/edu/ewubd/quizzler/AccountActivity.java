@@ -26,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AccountActivity extends AppCompatActivity {
     private ImageView image;
+    private TextView total_score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account);
 
         image = findViewById(R.id.image);
+        total_score = findViewById(R.id.total_score);
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
 
@@ -49,6 +51,8 @@ public class AccountActivity extends AppCompatActivity {
 
         TextView tvMobile = (TextView) findViewById(R.id.tvMobile);
         tvMobile.setText(sharedPreferences.getString("mobile", ""));
+
+        total_score.setText(sharedPreferences.getString("score", ""));
 
         LinearLayout profileTextView = findViewById(R.id.profile);
         profileTextView.setOnClickListener(new View.OnClickListener() {
@@ -150,5 +154,14 @@ public class AccountActivity extends AppCompatActivity {
         resultCanvas.drawBitmap(mask, 0, 0, paint);
 
         return result;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(AccountActivity.this, CategoryActivity.class);
+        intent.putExtra("highlightItem", R.id.action_item1);
+        startActivity(intent);
+        finish();
+        super.onBackPressed();
     }
 }

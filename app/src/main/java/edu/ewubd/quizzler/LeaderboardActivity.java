@@ -62,4 +62,13 @@ public class LeaderboardActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(LeaderboardActivity.this, CategoryActivity.class);
+        intent.putExtra("highlightItem", R.id.action_item1);
+        startActivity(intent);
+        finish();
+        super.onBackPressed();
+    }
 }

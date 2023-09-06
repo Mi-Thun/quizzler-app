@@ -9,11 +9,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.NameValuePair;
@@ -24,12 +22,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
     private String errMessage = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                 boolean cbRememberMe = ((CheckBox) findViewById(R.id.rememberMe)).isChecked();
 
                 if ("admin@gmail.com".equals(email) && "1111".equals(password)) {
-                    Intent intent = new Intent(LoginActivity.this, AddQuestionActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 } else if (validateLoginCredentials(email, password)) {
@@ -99,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
         if (errMessage.isEmpty()) {
             SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
             if(sharedPreferences.getString("email", "") == ""){
-                String keys[] = {"action","email", "password"};
-                String values[] = {"login", email, password};
+                String keys[] = {"action","email"};
+                String values[] = {"login", email};
                 httpRequest(keys, values);
             }
             if (email.equals(sharedPreferences.getString("email", "")) && password.equals(sharedPreferences.getString("password", ""))) {
@@ -172,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email = user.getString("email");
                 String mobile = user.getString("mobile");
                 String password = user.getString("password");
+                String score = user.getString("score");
 
                 SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -180,6 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("email", email);
                 editor.putString("mobile", mobile);
                 editor.putString("password", password);
+                editor.putString("score", score);
                 editor.apply();
             }
         } catch (Exception e) {

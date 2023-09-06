@@ -73,17 +73,6 @@ public class QuestionsActivity extends AppCompatActivity {
         listQuestion = findViewById(R.id.questionView);
         questions = new ArrayList<>();
 
-        questions.add(new QuestionItem("Python", "What is Python?", "Programming Language", "Reptile", "Fruit", "Animal", "A"));
-        questions.add(new QuestionItem("java", "Which of the following is NOT a Python data type?", "Class", "Integer", "List", "String", "B"));
-        questions.add(new QuestionItem("Python", "What is the file extension for Python source code files?", ".py", ".pt", ".pg", ".pn", "C"));
-        questions.add(new QuestionItem("Python", "Which keyword is used to define a function in Python?", "def", "function", "define", "func", "D"));
-        questions.add(new QuestionItem("ruby", "Which Python library is commonly used for data manipulation and analysis?", "Pandas", "Matplotlib", "Numpy", "Scikit-learn", "A"));
-        questions.add(new QuestionItem("Python", "Which Python data type is used to store an ordered collection of items?", "List", "Tuple", "Set", "Dictionary", "B"));
-        questions.add(new QuestionItem("Python", "What does the 'len()' function do in Python?", "Return the length of a sequence", "Convert a value to lowercase", "Generate a random number", "Check if a value is even","C"));
-        questions.add(new QuestionItem("Python", "In Python, how do you open and read from a file?", "open('file.txt', 'r')", "read_file('file.txt')", "file.open('file.txt')", "load('file.txt')", "D"));
-        questions.add(new QuestionItem("Python", "Which loop is used for iterating over a sequence (such as a list or tuple) in Python?", "for loop", "while loop", "repeat loop", "do-while loop", "A"));
-        questions.add(new QuestionItem("c++", "What is the result of the expression '3 + 5 * 2' in Python?", "13", "16", "11", "10", "B"));
-
         QuestionDB questionDB = new QuestionDB(this);
         Cursor cursor = questionDB.selectQuestionsByCategory(categoryName);
         if (cursor != null && cursor.moveToFirst()) {

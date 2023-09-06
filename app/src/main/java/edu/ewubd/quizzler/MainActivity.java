@@ -38,14 +38,32 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, AddQuestionActivity.class));
-                finish();
             }
         });
 
         findViewById(R.id.btnExit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.this);
+
+                builder.setTitle("Exit Confirmation");
+                builder.setMessage("Are you sure you want to exit?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                androidx.appcompat.app.AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }
@@ -132,5 +150,28 @@ public class MainActivity extends Activity {
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Exit Confirmation");
+        builder.setMessage("Are you sure you want to exit?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

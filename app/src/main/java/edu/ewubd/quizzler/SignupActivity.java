@@ -31,6 +31,7 @@ public class SignupActivity extends AppCompatActivity {
     private String errMessage = "";
     private EditText etName, etEmail, etMobile, etPassword, etRePassword;
     private CheckBox cbRememberMe;
+    private String score = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +92,11 @@ public class SignupActivity extends AppCompatActivity {
                     editor.putString("mobile", mobile);
                     editor.putString("password", password);
                     editor.putBoolean("isRememberMe", cbRememberMe);
+                    editor.putString("score", "0");
                     editor.apply();
 
-                    String keys[] = {"action", "name", "email", "mobile", "password"};
-                    String values[] = {"singup", name, email, mobile, password};
+                    String keys[] = {"action", "name", "email", "mobile", "password", "score"};
+                    String values[] = {"singup", name, email, mobile, password, score};
                     httpRequest(keys, values);
 
                     Intent intent = new Intent(SignupActivity.this, CategoryActivity.class);

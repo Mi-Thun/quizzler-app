@@ -187,6 +187,7 @@
                 android:gravity="center"
                 android:clickable="true"
                 android:id="@+id/profile"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <TextView

@@ -2,6 +2,7 @@ package edu.ewubd.quizzler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -59,7 +60,6 @@ public class AddQuestionActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AddQuestionActivity.this, MainActivity.class));
                 finish();
             }
         });
@@ -67,7 +67,6 @@ public class AddQuestionActivity extends AppCompatActivity {
         findViewById(R.id.btnViewQuestion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AddQuestionActivity.this, MainActivity.class));
                 finish();
             }
         });
@@ -103,7 +102,7 @@ public class AddQuestionActivity extends AppCompatActivity {
         questionDB.updateQuestion(id, question, optionA, optionB, optionC, optionD, answer, category);
 
         Toast.makeText(this, "Question update successfully", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     private void clearFields() {
@@ -114,5 +113,10 @@ public class AddQuestionActivity extends AppCompatActivity {
         optionDEditText.setText("");
         answerEditText.setText("");
         categoryEditText.setText("");
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

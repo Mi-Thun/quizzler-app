@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (errMessage.isEmpty()) {
             SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
-            if(sharedPreferences.getString("email", "") == ""){
+            if (!sharedPreferences.getBoolean("isRememberMe", false)) {
                 String keys[] = {"action","email"};
                 String values[] = {"login", email};
                 httpRequest(keys, values);
@@ -125,18 +125,18 @@ public class LoginActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void httpRequest ( final String keys[], final String values[]){
-        new AsyncTask<Void, Void, String>() {
+    private void httpRequest(final String keys[],final String values[]){
+        new AsyncTask<Void,Void,String>(){
             @Override
             protected String doInBackground(Void... voids) {
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                for (int i = 0; i < keys.length; i++) {
-                    params.add(new BasicNameValuePair(keys[i], values[i]));
+                List<NameValuePair> params=new ArrayList<NameValuePair>();
+                for (int i=0; i<keys.length; i++){
+                    params.add(new BasicNameValuePair(keys[i],values[i]));
                 }
-                String url = "";
-                String data = "";
+                String url= "http://localhost/quizzler/";
+                String data="";
                 try {
-                    data = JSONParser.getInstance().makeHttpRequest(url, "POST", params);
+                    data=JSONParser.getInstance().makeHttpRequest(url,"POST",params);
                     System.out.println(data);
                     return data;
                 } catch (Exception e) {
@@ -144,13 +144,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 return null;
             }
-
-            protected void onPostExecute(String data) {
-                if (data != null) {
+            protected void onPostExecute(String data){
+                if(data!=null){
                     System.out.println(data);
                     System.out.println("Ok2");
                     getUserDataByServerData(data);
-                    Toast.makeText(getApplicationContext(), data, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),data,Toast.LENGTH_SHORT).show();
+                } else{
+                    System.out.println("No data found");
                 }
             }
         }.execute();
@@ -159,10 +160,11 @@ public class LoginActivity extends AppCompatActivity {
         System.out.println("found");
         try {
             JSONObject jo = new JSONObject(data);
-            if (jo.has("userdata")) {
-                JSONArray ja = jo.getJSONArray("userdata");
+            String msg = jo.getString("msg");
 
-                JSONObject user = ja.getJSONObject(0);
+            if ("OK".equals(msg)) {
+                JSONArray userArray = jo.getJSONArray("user");
+                JSONObject user = userArray.getJSONObject(0);
                 String name = user.getString("name");
                 String email = user.getString("email");
                 String mobile = user.getString("mobile");
@@ -180,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.apply();
             }
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }

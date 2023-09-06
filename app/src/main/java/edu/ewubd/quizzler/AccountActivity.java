@@ -120,12 +120,12 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private Bitmap createCircularTextImage(char firstLetter) {
-        int size = 200; // Set the desired image size
+        int size = 200;
         Bitmap image = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(image);
 
         // Set background color and paint attributes
-        canvas.drawColor(Color.parseColor("#FF5722")); // You can change the background color
+        canvas.drawColor(Color.parseColor("#FF5722"));
         Paint paint = new Paint();
         paint.setColor(Color.WHITE); // Text color
         paint.setTextSize(100); // Text size
